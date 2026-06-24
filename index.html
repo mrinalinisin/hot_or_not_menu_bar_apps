@@ -11,7 +11,6 @@
     --accent: #7a1f2b;
     --rule: #d8cdb6;
     --keep: #1f7a3d;
-    --maybe: #b8860b;
     --pass: #8a3320;
   }
   * { box-sizing: border-box; }
@@ -68,7 +67,6 @@
   .counts { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .8rem; color: #6f6557; margin: .4rem 0 0; }
   .counts b { font-style: normal; }
   .counts .k { color: var(--keep); }
-  .counts .m { color: var(--maybe); }
   .counts .p { color: var(--pass); }
   .counts .ct { cursor: pointer; border: 0; background: none; font: inherit; padding: .1rem .4rem; margin: -.1rem -.1rem; border-radius: 6px; transition: background .15s ease; }
   .counts .ct:hover, .counts .ct:focus-visible { background: rgba(0,0,0,.06); outline: none; }
@@ -115,12 +113,10 @@
   }
   .stamp.keep  { right: 18px; transform: rotate(12deg);  color: var(--keep);  border-color: var(--keep); }
   .stamp.pass  { left: 18px;  transform: rotate(-12deg); color: var(--pass);  border-color: var(--pass); }
-  .stamp.maybe { left: 50%; top: auto; bottom: 18px; transform: translateX(-50%); color: var(--maybe); border-color: var(--maybe); }
 
   /* fly-off animations */
   .card.fly-keep  { transition: transform .35s ease, opacity .35s ease; transform: translateX(140%) rotate(18deg);  opacity: 0; }
   .card.fly-pass  { transition: transform .35s ease, opacity .35s ease; transform: translateX(-140%) rotate(-18deg); opacity: 0; }
-  .card.fly-maybe { transition: transform .35s ease, opacity .35s ease; transform: translateY(130%); opacity: 0; }
   .card.fly-back  { transition: transform .3s ease, opacity .3s ease; transform: translateY(-40px); opacity: 0; }
 
   /* ---------- Action buttons (pinned footer) ---------- */
@@ -146,7 +142,6 @@
   .act.big { width: 78px; height: 78px; }
   .act.sm  { width: 60px; height: 60px; }
   .act.pass:hover  { border-color: var(--pass);  color: var(--pass); }
-  .act.maybe:hover { border-color: var(--maybe); color: var(--maybe); }
   .act.keep:hover  { border-color: var(--keep);  color: var(--keep); }
   .act.undo:hover  { border-color: var(--ink); }
   .act:disabled { opacity: .35; cursor: default; transform: none; }
@@ -221,12 +216,10 @@
     transition: background .12s ease, color .12s ease, border-color .12s ease;
   }
   .row .rebucket button.bk:hover { background: var(--keep);  color: #fff; border-color: var(--keep); }
-  .row .rebucket button.bm:hover { background: var(--maybe); color: #fff; border-color: var(--maybe); }
   .row .rebucket button.bp:hover { background: var(--pass);  color: #fff; border-color: var(--pass); }
   /* the bucket this card is already in: shown as current, not a move target */
   .row .rebucket button.on { cursor: default; }
   .row .rebucket button.bk.on { background: var(--keep);  color: #fff; border-color: var(--keep); }
-  .row .rebucket button.bm.on { background: var(--maybe); color: #fff; border-color: var(--maybe); }
   .row .rebucket button.bp.on { background: var(--pass);  color: #fff; border-color: var(--pass); }
   .empty { text-align: center; color: #8a7f6d; font-style: italic; padding: 3rem 1rem; }
   .review-foot { padding: .9rem 1.2rem; border-top: 2px solid var(--rule); display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
@@ -275,7 +268,6 @@
   <p class="counts">
     <span><b id="cDone">0</b> of <button type="button" class="ct" data-bucket="todo" title="View items still to review"><b id="cTotal">0</b></button> reviewed</span>
     <button type="button" class="k ct" data-bucket="keep" title="View your Keep list">&hearts; Keep <b id="cKeep">0</b></button>
-    <button type="button" class="m ct" data-bucket="maybe" title="View your Maybe list">&#9734; Maybe <b id="cMaybe">0</b></button>
     <button type="button" class="p ct" data-bucket="pass" title="View your Pass list">&times; Pass <b id="cPass">0</b></button>
   </p>
 </div>
@@ -292,14 +284,11 @@
     <button class="act pass big" id="bPass" type="button" title="Pass (&larr;)" aria-label="Pass">
       <span class="glyph">&times;</span>
     </button>
-    <button class="act maybe sm" id="bMaybe" type="button" title="Maybe (&darr;)" aria-label="Maybe">
-      <span class="glyph">&#9734;</span>
-    </button>
     <button class="act keep big" id="bKeep" type="button" title="Keep (&rarr;)" aria-label="Keep">
       <span class="glyph">&hearts;</span>
     </button>
   </div>
-  <p class="hint" id="hint">Drag the card or use the buttons &middot; keys: &larr; pass &nbsp; &darr; maybe &nbsp; &rarr; keep &nbsp; O open &nbsp; U undo</p>
+  <p class="hint" id="hint">Drag the card or use the buttons &middot; keys: &larr; pass &nbsp; &rarr; keep &nbsp; O open &nbsp; U undo</p>
 </div>
 
 <footer class="sitefoot">
@@ -313,7 +302,6 @@
     <h2 id="reviewTitle">Your shortlist</h2>
     <div class="tabs" id="tabs">
       <button class="tab active" data-bucket="keep" type="button">&hearts; Keep <span id="tKeep">0</span></button>
-      <button class="tab" data-bucket="maybe" type="button">&#9734; Maybe <span id="tMaybe">0</span></button>
       <button class="tab" data-bucket="pass" type="button">&times; Pass <span id="tPass">0</span></button>
       <button class="tab" data-bucket="todo" type="button">&#9744; To review <span id="tTodo">0</span></button>
     </div>
@@ -344,7 +332,7 @@ const DATA = [{"t":"Framéd – FREATURED","d":"This menu bar app keeps screensh
 
 const keyOf = p => p.t + ' ' + p.u;            // same scheme the old gallery used
 
-const DECISIONS_KEY = 'mmb-decisions';         // { key: 'keep'|'maybe'|'pass' }
+const DECISIONS_KEY = 'mmb-decisions';         // { key: 'keep'|'pass' }
 const SEED_KEY      = 'mmb-seed';              // integer seed for the stable shuffle
 const LEGACY_KEY    = 'mmb-removed';           // old gallery's deleted-card list
 
@@ -391,7 +379,7 @@ const history = [];   // [{ key, prev }]  prev = decision before this action (or
 // ---- element refs ----
 const $ = id => document.getElementById(id);
 const deck = $('deck'), stage = $('stage'), hint = $('hint'), actions = $('actions');
-const bPass = $('bPass'), bMaybe = $('bMaybe'), bKeep = $('bKeep'), bUndo = $('bUndo');
+const bPass = $('bPass'), bKeep = $('bKeep'), bUndo = $('bUndo');
 
 function escapeHtml(s){
   return (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -414,8 +402,7 @@ function buildCard(p){
       '<a class="visit" href="' + escapeHtml(p.u) + '" target="_blank" rel="noopener noreferrer">Visit website &rarr;</a>' +
     '</div>' +
     '<div class="stamp keep">Keep</div>' +
-    '<div class="stamp pass">Pass</div>' +
-    '<div class="stamp maybe">Maybe</div>';
+    '<div class="stamp pass">Pass</div>';
   return el;
 }
 
@@ -428,13 +415,12 @@ function render(){
   if (!p){                       // queue exhausted
     actions.style.display = 'none';
     hint.style.display = 'none';
-    const k = count('keep'), m = count('maybe');
+    const k = count('keep');
     const done = document.createElement('div');
     done.className = 'done';
     done.innerHTML =
       '<h2>All done! &#127881;</h2>' +
-      '<p>You reviewed every app. You kept <b>' + k + '</b>' +
-      (m ? ' and flagged <b>' + m + '</b> as maybe' : '') + '.</p>' +
+      '<p>You reviewed every app. You kept <b>' + k + '</b>.</p>' +
       '<p><button class="navbtn primary" id="openShortlist" type="button">View your shortlist</button></p>';
     deck.appendChild(done);
     $('openShortlist').addEventListener('click', () => openReview('keep'));
@@ -484,7 +470,6 @@ function attachDrag(el, p){
   let startX = 0, startY = 0, dx = 0, dy = 0, dragging = false;
   const stampKeep = el.querySelector('.stamp.keep');
   const stampPass = el.querySelector('.stamp.pass');
-  const stampMaybe = el.querySelector('.stamp.maybe');
   const TH = 90;   // px threshold to trigger a decision
 
   el.addEventListener('pointerdown', e => {
@@ -501,7 +486,6 @@ function attachDrag(el, p){
     const horiz = Math.abs(dx) > Math.abs(dy);
     stampKeep.style.opacity  = (horiz && dx > 0)  ? Math.min(1, dx / TH) : 0;
     stampPass.style.opacity  = (horiz && dx < 0)  ? Math.min(1, -dx / TH) : 0;
-    stampMaybe.style.opacity = (!horiz && dy > 0) ? Math.min(1, dy / TH) : 0;
   });
   el.addEventListener('pointerup', e => {
     if (!dragging) return;
@@ -510,10 +494,9 @@ function attachDrag(el, p){
     const horiz = Math.abs(dx) > Math.abs(dy);
     if (horiz && dx > TH)  return decide('keep');
     if (horiz && dx < -TH) return decide('pass');
-    if (!horiz && dy > TH) return decide('maybe');
     // snap back
     el.style.transform = '';
-    stampKeep.style.opacity = stampPass.style.opacity = stampMaybe.style.opacity = 0;
+    stampKeep.style.opacity = stampPass.style.opacity = 0;
   });
 }
 
@@ -521,12 +504,11 @@ function attachDrag(el, p){
 function count(v){ let n = 0; for (const k in decisions) if (decisions[k] === v) n++; return n; }
 function updateStats(){
   const total = order.length;
-  const keep = count('keep'), maybe = count('maybe'), pass = count('pass');
-  const done = keep + maybe + pass;
+  const keep = count('keep'), pass = count('pass');
+  const done = keep + pass;
   $('cTotal').textContent = total;
   $('cDone').textContent  = done;
   $('cKeep').textContent  = keep;
-  $('cMaybe').textContent = maybe;
   $('cPass').textContent  = pass;
   $('keepPill').textContent = keep;
   $('progressFill').style.width = (total ? (done / total * 100) : 0) + '%';
@@ -539,13 +521,11 @@ document.addEventListener('keydown', e => {
   switch (e.key) {
     case 'ArrowLeft':  e.preventDefault(); decide('pass'); break;
     case 'ArrowRight': e.preventDefault(); decide('keep'); break;
-    case 'ArrowDown':  e.preventDefault(); decide('maybe'); break;
     case 'u': case 'U': case 'Backspace': e.preventDefault(); undo(); break;
     case 'o': case 'O': { const p = currentCard(); if (p) window.open(p.u, '_blank', 'noopener'); break; }
   }
 });
 bPass.addEventListener('click', () => decide('pass'));
-bMaybe.addEventListener('click', () => decide('maybe'));
 bKeep.addEventListener('click', () => decide('keep'));
 bUndo.addEventListener('click', undo);
 
@@ -590,7 +570,6 @@ let reviewScrollHandler = null; // active scroll listener for the current bucket
 function refreshReviewCounts(){
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.bucket === activeBucket));
   $('tKeep').textContent = count('keep');
-  $('tMaybe').textContent = count('maybe');
   $('tPass').textContent = count('pass');
   $('tTodo').textContent = listFor('todo').length;
   $('reviewTitle').textContent = activeBucket === 'todo' ? 'Still to review' : 'Your shortlist';
@@ -612,7 +591,6 @@ function buildReviewRow(p){
     '<div class="rebucket">' +
       '<span class="rebucket-label">Move to:</span>' +
       '<button data-v="keep"  class="bk ' + (cur === 'keep'  ? 'on' : '') + '" title="Move to Keep">&hearts; Keep</button>' +
-      '<button data-v="maybe" class="bm ' + (cur === 'maybe' ? 'on' : '') + '" title="Move to Maybe">&#9734; Maybe</button>' +
       '<button data-v="pass"  class="bp ' + (cur === 'pass'  ? 'on' : '') + '" title="Move to Pass">&times; Pass</button>' +
     '</div>';
   row.querySelectorAll('.rebucket button').forEach(btn =>
@@ -688,7 +666,7 @@ $('copyBtn').addEventListener('click', async () => {
 });
 
 $('resetBtn').addEventListener('click', () => {
-  if (!window.confirm('Reset all decisions and start over? This clears your Keep/Maybe/Pass choices.')) return;
+  if (!window.confirm('Reset all decisions and start over? This clears your Keep/Pass choices.')) return;
   decisions = {};
   saveDecisions();
   history.length = 0;
