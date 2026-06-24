@@ -70,6 +70,9 @@
   .counts .k { color: var(--keep); }
   .counts .m { color: var(--maybe); }
   .counts .p { color: var(--pass); }
+  .counts .ct { cursor: pointer; border: 0; background: none; font: inherit; padding: .1rem .4rem; margin: -.1rem -.1rem; border-radius: 6px; transition: background .15s ease; }
+  .counts .ct:hover, .counts .ct:focus-visible { background: rgba(0,0,0,.06); outline: none; }
+  .counts .ct:focus-visible { box-shadow: 0 0 0 2px currentColor; }
 
   /* ---------- Card stage ---------- */
   .stage {
@@ -171,23 +174,60 @@
     background: #fff; border: 1px solid var(--rule); border-radius: 999px; padding: .35rem .9rem; color: var(--ink);
   }
   .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .review-body { flex: 1 1 auto; overflow-y: auto; padding: 1.2rem; }
-  .list { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: .8rem; }
-  .row {
-    display: flex; gap: .9rem; background: #fff; border: 1px solid var(--rule);
-    border-radius: 8px; padding: .7rem; align-items: flex-start;
+  .review-search {
+    display: flex; align-items: center; gap: .8rem; padding: .7rem 1.2rem;
+    border-bottom: 1px solid var(--rule);
   }
-  .row img { width: 92px; height: 64px; object-fit: cover; border-radius: 4px; background: var(--paper); flex: 0 0 auto; }
-  .row .meta { flex: 1 1 auto; min-width: 0; }
-  .row .meta h3 { margin: 0 0 .2rem; font-size: 1.02rem; }
-  .row .meta p { margin: 0 0 .35rem; font-size: .82rem; color: #6f6557; }
-  .row .meta a { font-size: .78rem; color: var(--accent); }
-  .row .rebucket { display: flex; gap: .3rem; flex-wrap: wrap; }
+  .review-search input {
+    flex: 1 1 auto; min-width: 0; font-family: inherit; font-size: .95rem;
+    padding: .5rem .9rem; border: 1px solid var(--rule); border-radius: 8px;
+    background: #fff; color: var(--ink);
+  }
+  .review-search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(122,31,43,.15); }
+  .review-search .search-count { font-size: .8rem; color: #8a7f6d; white-space: nowrap; }
+  .review-body { flex: 1 1 auto; overflow-y: auto; padding: 1.2rem; }
+  .list {
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px; align-items: start;
+  }
+  .scroll-sentinel { grid-column: 1 / -1; height: 1px; }
+  .row {
+    display: flex; flex-direction: column; background: #fff; border: 1px solid var(--rule);
+    border-radius: 8px; overflow: hidden;
+    transition: box-shadow .15s ease, transform .15s ease;
+  }
+  .row:hover { box-shadow: 0 6px 16px rgba(0,0,0,.08); transform: translateY(-2px); }
+  .card-main { text-decoration: none; color: inherit; display: block; }
+  .row .card-image { padding: 12px 12px 0; }
+  .row .card-image img {
+    display: block; width: 100%; aspect-ratio: 1; object-fit: cover;
+    border-radius: 6px; background: var(--paper);
+  }
+  .row .meta { padding: 12px 14px; flex: 1 1 auto; min-width: 0; }
+  .row .meta h3 {
+    margin: 0 0 .35rem; font-size: 1rem; line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .row .meta p {
+    margin: 0; font-size: .82rem; color: #6f6557; line-height: 1.45;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .row .rebucket { display: flex; gap: .3rem; flex-wrap: wrap; align-items: center; padding: 0 14px 14px; margin-top: auto; }
+  .row .rebucket-label { flex-basis: 100%; font-size: .7rem; color: #8a7f6d; margin-bottom: .1rem; }
   .row .rebucket button {
     font-family: inherit; font-size: .72rem; cursor: pointer; padding: .2rem .5rem;
     border-radius: 999px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink);
+    transition: background .12s ease, color .12s ease, border-color .12s ease;
   }
-  .row .rebucket button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .row .rebucket button.bk:hover { background: var(--keep);  color: #fff; border-color: var(--keep); }
+  .row .rebucket button.bm:hover { background: var(--maybe); color: #fff; border-color: var(--maybe); }
+  .row .rebucket button.bp:hover { background: var(--pass);  color: #fff; border-color: var(--pass); }
+  /* the bucket this card is already in: shown as current, not a move target */
+  .row .rebucket button.on { cursor: default; }
+  .row .rebucket button.bk.on { background: var(--keep);  color: #fff; border-color: var(--keep); }
+  .row .rebucket button.bm.on { background: var(--maybe); color: #fff; border-color: var(--maybe); }
+  .row .rebucket button.bp.on { background: var(--pass);  color: #fff; border-color: var(--pass); }
   .empty { text-align: center; color: #8a7f6d; font-style: italic; padding: 3rem 1rem; }
   .review-foot { padding: .9rem 1.2rem; border-top: 2px solid var(--rule); display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
   .danger { color: var(--pass); }
@@ -233,10 +273,10 @@
 <div class="progresswrap">
   <div class="progressbar"><i id="progressFill"></i></div>
   <p class="counts">
-    <span><b id="cDone">0</b> of <b id="cTotal">0</b> reviewed</span>
-    <span class="k">&hearts; Keep <b id="cKeep">0</b></span>
-    <span class="m">&#9734; Maybe <b id="cMaybe">0</b></span>
-    <span class="p">&times; Pass <b id="cPass">0</b></span>
+    <span><b id="cDone">0</b> of <button type="button" class="ct" data-bucket="todo" title="View items still to review"><b id="cTotal">0</b></button> reviewed</span>
+    <button type="button" class="k ct" data-bucket="keep" title="View your Keep list">&hearts; Keep <b id="cKeep">0</b></button>
+    <button type="button" class="m ct" data-bucket="maybe" title="View your Maybe list">&#9734; Maybe <b id="cMaybe">0</b></button>
+    <button type="button" class="p ct" data-bucket="pass" title="View your Pass list">&times; Pass <b id="cPass">0</b></button>
   </p>
 </div>
 
@@ -264,19 +304,25 @@
 
 <footer class="sitefoot">
   Data scraped from <a href="https://macmenubar.com/recently-added/" target="_blank" rel="noopener noreferrer">https://macmenubar.com</a> for educational purposes only
+  &middot; <a href="stats.html">Stats</a>
 </footer>
 
 <!-- Review / shortlist overlay -->
 <div class="review" id="review">
   <div class="review-head">
-    <h2>Your shortlist</h2>
+    <h2 id="reviewTitle">Your shortlist</h2>
     <div class="tabs" id="tabs">
       <button class="tab active" data-bucket="keep" type="button">&hearts; Keep <span id="tKeep">0</span></button>
       <button class="tab" data-bucket="maybe" type="button">&#9734; Maybe <span id="tMaybe">0</span></button>
       <button class="tab" data-bucket="pass" type="button">&times; Pass <span id="tPass">0</span></button>
+      <button class="tab" data-bucket="todo" type="button">&#9744; To review <span id="tTodo">0</span></button>
     </div>
     <span class="spacer"></span>
     <button class="navbtn" id="closeReview" type="button">Back to swiping</button>
+  </div>
+  <div class="review-search">
+    <input type="search" id="reviewSearch" placeholder="Search this list&hellip;" autocomplete="off" aria-label="Search this list">
+    <span class="search-count" id="searchCount"></span>
   </div>
   <div class="review-body">
     <div class="list" id="reviewList"></div>
@@ -508,6 +554,7 @@ bUndo.addEventListener('click', undo);
    ============================================================ */
 const review = $('review');
 let activeBucket = 'keep';
+let reviewQuery = '';
 
 function openReview(bucket){ activeBucket = bucket || activeBucket; review.classList.add('open'); renderReview(); }
 function closeReview(){ review.classList.remove('open'); render(); }
@@ -516,47 +563,124 @@ $('reviewBtn').addEventListener('click', () => openReview('keep'));
 $('closeReview').addEventListener('click', closeReview);
 document.querySelectorAll('.tab').forEach(t =>
   t.addEventListener('click', () => { activeBucket = t.dataset.bucket; renderReview(); }));
+document.querySelectorAll('.counts .ct').forEach(c =>
+  c.addEventListener('click', () => openReview(c.dataset.bucket)));
+$('reviewSearch').addEventListener('input', e => { reviewQuery = e.target.value; renderReview(); });
 
-function listFor(bucket){ return order.filter(p => decisions[keyOf(p)] === bucket); }
+function listFor(bucket){
+  if (bucket === 'todo') return order.filter(p => !decisions[keyOf(p)]);   // not yet reviewed
+  return order.filter(p => decisions[keyOf(p)] === bucket);
+}
 
-function renderReview(){
-  // tab active state + counts
+// items in the active bucket, narrowed by the search box (matches title, blurb, url)
+function matchedItems(){
+  const items = listFor(activeBucket);
+  const q = reviewQuery.trim().toLowerCase();
+  if (!q) return items;
+  const terms = q.split(/\s+/);
+  return items.filter(p => {
+    const hay = ((p.t || '') + ' ' + (p.d || '') + ' ' + (p.u || '')).toLowerCase();
+    return terms.every(t => hay.includes(t));
+  });
+}
+
+const REVIEW_PAGE = 24;        // rows rendered per infinite-scroll batch
+let reviewScrollHandler = null; // active scroll listener for the current bucket
+
+function refreshReviewCounts(){
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.bucket === activeBucket));
   $('tKeep').textContent = count('keep');
   $('tMaybe').textContent = count('maybe');
   $('tPass').textContent = count('pass');
+  $('tTodo').textContent = listFor('todo').length;
+  $('reviewTitle').textContent = activeBucket === 'todo' ? 'Still to review' : 'Your shortlist';
+}
 
-  const items = listFor(activeBucket);
-  const listEl = $('reviewList'), emptyEl = $('reviewEmpty');
-  listEl.innerHTML = '';
-  emptyEl.hidden = items.length > 0;
-
-  items.forEach(p => {
-    const k = keyOf(p);
-    const cur = decisions[k];
-    const row = document.createElement('div');
-    row.className = 'row';
-    row.innerHTML =
-      '<img src="' + escapeHtml(p.img) + '" alt="" loading="lazy">' +
+function buildReviewRow(p){
+  const k = keyOf(p);
+  const cur = decisions[k];
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML =
+    '<a class="card-main" href="' + escapeHtml(p.u) + '" target="_blank" rel="noopener noreferrer">' +
+      '<div class="card-image"><img src="' + escapeHtml(p.img) + '" alt="" loading="lazy"></div>' +
       '<div class="meta">' +
         '<h3>' + escapeHtml(p.t) + '</h3>' +
         '<p>' + escapeHtml(p.d || '') + '</p>' +
-        '<a href="' + escapeHtml(p.u) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(p.u) + '</a>' +
-        '<div class="rebucket">' +
-          '<button data-v="keep"  class="' + (cur === 'keep'  ? 'on' : '') + '">&hearts; Keep</button>' +
-          '<button data-v="maybe" class="' + (cur === 'maybe' ? 'on' : '') + '">&#9734; Maybe</button>' +
-          '<button data-v="pass"  class="' + (cur === 'pass'  ? 'on' : '') + '">&times; Pass</button>' +
-        '</div>' +
-      '</div>';
-    row.querySelectorAll('.rebucket button').forEach(btn =>
-      btn.addEventListener('click', () => { decisions[k] = btn.dataset.v; saveDecisions(); renderReview(); updateStats(); }));
-    listEl.appendChild(row);
-  });
+      '</div>' +
+    '</a>' +
+    '<div class="rebucket">' +
+      '<span class="rebucket-label">Move to:</span>' +
+      '<button data-v="keep"  class="bk ' + (cur === 'keep'  ? 'on' : '') + '" title="Move to Keep">&hearts; Keep</button>' +
+      '<button data-v="maybe" class="bm ' + (cur === 'maybe' ? 'on' : '') + '" title="Move to Maybe">&#9734; Maybe</button>' +
+      '<button data-v="pass"  class="bp ' + (cur === 'pass'  ? 'on' : '') + '" title="Move to Pass">&times; Pass</button>' +
+    '</div>';
+  row.querySelectorAll('.rebucket button').forEach(btn =>
+    btn.addEventListener('click', () => {
+      const v = btn.dataset.v;
+      if (decisions[k] === v) return;                 // already in this bucket — no-op
+      decisions[k] = v; saveDecisions();
+      row.remove();                                   // drop from current view, keep scroll
+      refreshReviewCounts(); updateStats();
+      const listEl = $('reviewList');
+      $('reviewEmpty').hidden = listEl.querySelectorAll('.row').length > 0;
+    }));
+  return row;
+}
+
+function renderReview(){
+  refreshReviewCounts();
+
+  const items = matchedItems();
+  const total = listFor(activeBucket).length;
+  const q = reviewQuery.trim();
+  const listEl = $('reviewList'), emptyEl = $('reviewEmpty');
+  const scroller = document.querySelector('.review-body');
+  listEl.innerHTML = '';
+  emptyEl.hidden = items.length > 0;
+  emptyEl.textContent = q ? ('No matches for “' + q + '”.')
+    : (activeBucket === 'todo' ? 'You’ve reviewed everything! 🎉' : 'Nothing here yet.');
+  $('searchCount').textContent = q ? (items.length + ' of ' + total + ' match') : '';
+  if (reviewScrollHandler) { scroller.removeEventListener('scroll', reviewScrollHandler); reviewScrollHandler = null; }
+  scroller.scrollTop = 0;                              // reset scroll for the new bucket
+
+  let rendered = 0, ticking = false;
+
+  function renderMore(){
+    const frag = document.createDocumentFragment();
+    const end = Math.min(rendered + REVIEW_PAGE, items.length);
+    for (let i = rendered; i < end; i++) frag.appendChild(buildReviewRow(items[i]));
+    listEl.appendChild(frag);
+    rendered = end;
+    if (rendered >= items.length && reviewScrollHandler){ // all rendered — stop listening
+      scroller.removeEventListener('scroll', reviewScrollHandler);
+      reviewScrollHandler = null;
+    }
+  }
+
+  function fillToBottom(){                              // keep loading until the page actually scrolls
+    let guard = 0;
+    while (rendered < items.length && scroller.scrollHeight <= scroller.clientHeight + 600 && guard++ < 50) renderMore();
+  }
+
+  renderMore();
+  if (rendered < items.length){
+    reviewScrollHandler = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 600) renderMore();
+      });
+    };
+    scroller.addEventListener('scroll', reviewScrollHandler, { passive: true });
+    fillToBottom();                                    // ensure first viewport is scrollable
+  }
 }
 
 // copy current bucket as a plain text / markdown list
 $('copyBtn').addEventListener('click', async () => {
-  const items = listFor(activeBucket);
+  const items = matchedItems();
   const text = items.map(p => '- ' + p.t + ' — ' + p.u).join('\n');
   try { await navigator.clipboard.writeText(text); $('copyBtn').textContent = 'Copied ' + items.length + '!'; }
   catch (e) { window.prompt('Copy this list:', text); }

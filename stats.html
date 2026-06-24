@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blurb Stats &mdash; The Menu Bar Catalogue</title>
+<style>
+  :root {
+    --paper: #f4efe4;
+    --ink: #2b2622;
+    --accent: #7a1f2b;
+    --rule: #d8cdb6;
+    --keep: #1f7a3d;
+    --maybe: #b8860b;
+    --pass: #8a3320;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif; line-height: 1.6;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 2rem 1.2rem 4rem; }
+  header { border-bottom: 2px solid var(--rule); padding-bottom: 1rem; margin-bottom: 1.6rem; }
+  h1 { margin: 0 0 .2rem; font-size: 1.9rem; }
+  .sub { color: #6f6557; font-size: .95rem; font-style: italic; margin: 0; }
+  .back { display: inline-block; margin-bottom: 1.2rem; color: var(--accent); text-decoration: none; font-size: .9rem; }
+  .back:hover { text-decoration: underline; }
+  h2 { font-size: 1.3rem; margin: 2.2rem 0 .6rem; border-bottom: 1px solid var(--rule); padding-bottom: .3rem; }
+  p { margin: .6rem 0; }
+  ul { margin: .6rem 0; padding-left: 1.3rem; }
+  li { margin: .3rem 0; }
+  strong { color: var(--accent); }
+  table { border-collapse: collapse; width: 100%; max-width: 360px; margin: .8rem 0; font-size: .95rem; }
+  th, td { text-align: left; padding: .3rem .7rem; border-bottom: 1px solid var(--rule); }
+  th { color: #6f6557; font-weight: 600; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; color: var(--accent); font-weight: 600; width: 4rem; }
+  .pills { display: flex; flex-wrap: wrap; gap: .4rem; margin: .8rem 0; }
+  .pill { background: #fff; border: 1px solid var(--rule); border-radius: 999px; padding: .25rem .7rem; font-size: .85rem; }
+  .pill b { color: var(--accent); }
+  .callout {
+    background: #fff; border: 1px solid var(--rule); border-left: 4px solid var(--accent);
+    border-radius: 6px; padding: 1rem 1.2rem; margin: 1rem 0;
+  }
+  .callout blockquote { margin: .6rem 0; font-style: italic; color: #2d2d2d; }
+  .callout .src { font-size: .85rem; color: #6f6557; }
+  code { background: #fff; border: 1px solid var(--rule); border-radius: 4px; padding: .05rem .35rem; font-size: .85em; }
+  footer { text-align: center; margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-size: .75rem; color: #8a7f6d; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">&larr; Back to the catalogue</a>
+  <header>
+    <h1>What the blurbs are made of</h1>
+    <p class="sub">A word &amp; phrase frequency analysis of all 1,439 app descriptions in the catalogue.</p>
+  </header>
+
+  <h2>The unavoidable boilerplate</h2>
+  <p>&ldquo;Menu bar app&rdquo; is in nearly every blurb &mdash; it&rsquo;s a menu-bar catalogue, after all:</p>
+  <ul>
+    <li><strong>menu bar</strong> &mdash; 916 times</li>
+    <li><strong>menu bar app</strong> &mdash; 456 times</li>
+    <li><strong>228 blurbs (15%) literally open with &ldquo;This menu bar app&hellip;&rdquo;</strong></li>
+  </ul>
+
+  <h2>Most-used real words</h2>
+  <p>With the boilerplate stripped out and stopwords removed:</p>
+  <table>
+    <thead><tr><th>Word</th><th class="n">Count</th></tr></thead>
+    <tbody>
+      <tr><td>time</td><td class="n">274</td></tr>
+      <tr><td>without</td><td class="n">216</td></tr>
+      <tr><td>lets</td><td class="n">179</td></tr>
+      <tr><td>keeps</td><td class="n">174</td></tr>
+      <tr><td>click</td><td class="n">130</td></tr>
+      <tr><td>simple</td><td class="n">126</td></tr>
+      <tr><td>text</td><td class="n">113</td></tr>
+      <tr><td>instantly</td><td class="n">107</td></tr>
+      <tr><td>quick</td><td class="n">103</td></tr>
+      <tr><td>clean</td><td class="n">93</td></tr>
+      <tr><td>automatically</td><td class="n">89</td></tr>
+      <tr><td>fast</td><td class="n">86</td></tr>
+      <tr><td>lightweight</td><td class="n">82</td></tr>
+      <tr><td>quietly</td><td class="n">80</td></tr>
+      <tr><td>workflow</td><td class="n">77</td></tr>
+    </tbody>
+  </table>
+
+  <h2>The marketing-cliché leaderboard</h2>
+  <p>Number of blurbs containing each phrase:</p>
+  <div class="pills">
+    <span class="pill">lets you <b>172</b></span>
+    <span class="pill">simple <b>128</b></span>
+    <span class="pill">clean <b>120</b></span>
+    <span class="pill">focus <b>117</b></span>
+    <span class="pill">fast <b>107</b></span>
+    <span class="pill">instantly <b>106</b></span>
+    <span class="pill">lightweight <b>82</b></span>
+    <span class="pill">quietly <b>80</b></span>
+    <span class="pill">effortless(ly) <b>96</b></span>
+    <span class="pill">helps you <b>58</b></span>
+    <span class="pill">distraction(-free) <b>84</b></span>
+    <span class="pill">allows you to <b>57</b></span>
+    <span class="pill">keeps your <b>55</b></span>
+    <span class="pill">real-time <b>52</b></span>
+    <span class="pill">clutter <b>42</b></span>
+    <span class="pill">lives in your menu bar <b>39</b></span>
+    <span class="pill">at a glance <b>37</b></span>
+    <span class="pill">single/one click <b>77</b></span>
+    <span class="pill">productivity <b>28</b></span>
+    <span class="pill">workspace <b>24</b></span>
+    <span class="pill">right from your <b>23</b></span>
+    <span class="pill">seamlessly <b>19</b></span>
+  </div>
+
+  <h2>Templated sentence skeletons</h2>
+  <p>The dominant generative templates (excluding &ldquo;menu bar&rdquo;):</p>
+  <ul>
+    <li>&ldquo;&hellip;app <strong>lets you</strong>&hellip;&rdquo; / &ldquo;&hellip;app <strong>allows you to</strong> quickly&hellip;&rdquo;</li>
+    <li>&ldquo;<strong>lives in your</strong> menu bar&rdquo; (33&times;), &ldquo;<strong>right from your</strong> menu bar&rdquo; (23&times;), &ldquo;<strong>directly from your</strong> menu bar&rdquo; (13&times;)</li>
+    <li>&ldquo;<strong>keeps an eye on</strong> your&hellip;&rdquo; (14&times;)</li>
+  </ul>
+
+  <h2>The smoking gun &#128269;</h2>
+  <p>Two sentences appear <strong>word-for-word across multiple different apps</strong> &mdash; a strong tell that some blurbs are auto-generated from a template:</p>
+  <div class="callout">
+    <blockquote>&ldquo;This comprehensive tool helps you stay organized and efficient throughout your workday without distractions or complications.&rdquo;</blockquote>
+    <p class="src">&mdash; appears <strong>verbatim in 10 different apps</strong></p>
+    <blockquote>&ldquo;This streamlines your workflow significantly.&rdquo;</blockquote>
+    <p class="src">&mdash; verbatim in 3.</p>
+  </div>
+
+  <h2>The takeaway</h2>
+  <p>The catalogue leans hard on a small vocabulary: <strong>lightweight / simple / clean / fast</strong> apps that <strong>let you / help you</strong> do things <strong>instantly</strong> and <strong>quietly</strong>, <strong>right from your menu bar</strong>, <strong>without distractions</strong>.</p>
+
+  <footer>
+    Generated from <code>data.json</code> &middot; data scraped from
+    <a href="https://macmenubar.com/recently-added/" target="_blank" rel="noopener noreferrer">macmenubar.com</a> for educational purposes only
+  </footer>
+</div>
+</body>
+</html>
