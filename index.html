@@ -508,8 +508,8 @@ function updateEta(remaining){
   if (span <= 0){ el.style.display = 'none'; return; }
   const perMs  = (swipeTimes.length - 1) / span;   // swipes per millisecond
   const msLeft = remaining / perMs;
-  el.textContent = 'At this rate, you’ll get through the remaining ' +
-    remaining + ' in ' + formatDuration(msLeft) + '.';
+  el.textContent = 'Awesome! Keep Going! You will finish swiping through ' +
+    remaining + ' cards in ' + formatDuration(msLeft) + '.';
   el.style.display = '';
 }
 
