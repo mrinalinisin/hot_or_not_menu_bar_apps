@@ -130,6 +130,7 @@
   .act.pass:hover  { border-color: var(--pass);  color: var(--pass); }
   .act.keep:hover  { border-color: var(--keep);  color: var(--keep); }
   .hint { font-size: .74rem; color: #8a7f6d; text-align: center; }
+  .eta { font-size: .74rem; color: var(--accent); text-align: center; margin: .25rem 0 0; opacity: .85; }
 
   /* ---------- Done screen ---------- */
   .done { text-align: center; max-width: 520px; }
@@ -258,6 +259,7 @@
   <div class="deckwrap">
     <div class="deck" id="deck"></div>
     <p class="hint" id="hint">Drag the card or use &larr;&nbsp;pass &middot; &rarr;&nbsp;keep &middot; U&nbsp;undo &middot; R&nbsp;Reset</p>
+    <p class="eta" id="eta" style="display:none"></p>
   </div>
 </main>
 
@@ -407,6 +409,7 @@ function decide(verdict){
   history.push({ key: k, prev: decisions[k] });
   decisions[k] = verdict;
   saveDecisions();
+  recordSwipe();
 
   if (cardEl){
     cardEl.classList.add('fly-' + verdict);
@@ -473,6 +476,41 @@ function updateStats(){
   $('cKeep').textContent  = keep;
   $('cPass').textContent  = pass;
   $('progressFill').style.width = (total ? (done / total * 100) : 0) + '%';
+  updateEta(total - done);
+}
+
+// ---- live "you'll finish in X" estimate ----
+// Timestamps of swipes made this session (not persisted — a rate measured
+// across a break is meaningless). Only the most recent few matter, so the
+// estimate tracks your *current* pace and drops as you speed up.
+const swipeTimes = [];
+const RATE_WINDOW = 12;   // how many recent swipes define "this rate"
+const MIN_SAMPLES = 5;    // wait for enough swipes before guessing
+
+function recordSwipe(){
+  swipeTimes.push(performance.now());
+  if (swipeTimes.length > RATE_WINDOW) swipeTimes.shift();
+}
+
+function formatDuration(ms){
+  const min = ms / 60000;
+  if (min < 1)  return 'under a minute';
+  if (min < 60){ const m = Math.round(min); return m + (m === 1 ? ' minute' : ' minutes'); }
+  const hrs = min / 60;
+  const h = hrs < 10 ? Math.round(hrs * 10) / 10 : Math.round(hrs);
+  return h + (h === 1 ? ' hour' : ' hours');
+}
+
+function updateEta(remaining){
+  const el = $('eta');
+  if (remaining <= 0 || swipeTimes.length < MIN_SAMPLES){ el.style.display = 'none'; return; }
+  const span = swipeTimes[swipeTimes.length - 1] - swipeTimes[0];
+  if (span <= 0){ el.style.display = 'none'; return; }
+  const perMs  = (swipeTimes.length - 1) / span;   // swipes per millisecond
+  const msLeft = remaining / perMs;
+  el.textContent = 'At this rate, you’ll get through the remaining ' +
+    remaining + ' in ' + formatDuration(msLeft) + '.';
+  el.style.display = '';
 }
 
 // ---- keyboard ----
