@@ -242,17 +242,6 @@
     <h1>The Menu Bar Catalogue</h1>
     <p class="tagline">Data scraped from <a href="https://macmenubar.com/recently-added/" target="_blank" rel="noopener noreferrer">macmenubar.com</a> for educational purposes only &middot; <a href="stats.html">Stats</a></p>
   </div>
-  <span class="spacer"></span>
-  <div class="actions" id="actions">
-    <button class="act pass" id="bPass" type="button" title="Pass (&larr;)" aria-label="Pass">
-      <span class="glyph">&larr;</span>
-    </button>
-    <button class="act keep" id="bKeep" type="button" title="Keep (&rarr;)" aria-label="Keep">
-      <span class="glyph">&rarr;</span>
-    </button>
-  </div>
-  <span class="spacer"></span>
-  <button id="clearBtn" class="navbtn danger" type="button" title="Clear your saved progress">Reset</button>
 </header>
 
 <div class="progresswrap">
@@ -262,7 +251,7 @@
     <button type="button" class="k ct" data-bucket="keep" title="View your Keep list">&hearts; Keep <b id="cKeep">0</b></button>
     <button type="button" class="p ct" data-bucket="pass" title="View your Pass list">&times; Pass <b id="cPass">0</b></button>
     <span class="spacer"></span>
-    <span class="hint" id="hint">Drag the card or use &larr;&nbsp;pass &middot; &rarr;&nbsp;keep &middot; U&nbsp;undo</span>
+    <span class="hint" id="hint">Drag the card or use &larr;&nbsp;pass &middot; &rarr;&nbsp;keep &middot; U&nbsp;undo &middot; R&nbsp;Reset</span>
   </p>
 </div>
 
@@ -353,8 +342,7 @@ const history = [];   // [{ key, prev }]  prev = decision before this action (or
 
 // ---- element refs ----
 const $ = id => document.getElementById(id);
-const deck = $('deck'), stage = $('stage'), hint = $('hint'), actions = $('actions');
-const bPass = $('bPass'), bKeep = $('bKeep');
+const deck = $('deck'), stage = $('stage'), hint = $('hint');
 
 function escapeHtml(s){
   return (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -388,7 +376,6 @@ function render(){
   cardEl = null;
 
   if (!p){                       // queue exhausted
-    actions.style.display = 'none';
     hint.style.display = 'none';
     const k = count('keep');
     const done = document.createElement('div');
@@ -402,7 +389,6 @@ function render(){
     return;
   }
 
-  actions.style.display = '';
   hint.style.display = '';
   cardEl = buildCard(p);
   deck.appendChild(cardEl);
@@ -496,10 +482,9 @@ document.addEventListener('keydown', e => {
     case 'ArrowRight': e.preventDefault(); decide('keep'); break;
     case 'u': case 'U': case 'Backspace': e.preventDefault(); undo(); break;
     case 'o': case 'O': { const p = currentCard(); if (p) window.open(p.u, '_blank', 'noopener'); break; }
+    case 'r': case 'R': e.preventDefault(); clearProgress(); break;
   }
 });
-bPass.addEventListener('click', () => decide('pass'));
-bKeep.addEventListener('click', () => decide('keep'));
 
 /* ============================================================
    Review / shortlist overlay
@@ -645,7 +630,6 @@ function clearProgress(){
   render();
 }
 $('resetBtn').addEventListener('click', clearProgress);
-$('clearBtn').addEventListener('click', clearProgress);
 
 // ---- go ----
 render();
