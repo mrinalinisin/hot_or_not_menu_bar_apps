@@ -260,6 +260,7 @@
     </button>
   </div>
   <span class="spacer"></span>
+  <button id="clearBtn" class="navbtn danger" type="button" title="Clear your saved progress">Reset</button>
   <button id="reviewBtn" class="navbtn primary" type="button">Shortlist <span class="pill" id="keepPill">0</span></button>
 </header>
 
@@ -650,14 +651,16 @@ $('copyBtn').addEventListener('click', async () => {
   setTimeout(() => { $('copyBtn').textContent = 'Copy this list'; }, 1600);
 });
 
-$('resetBtn').addEventListener('click', () => {
+function clearProgress(){
   if (!window.confirm('Reset all decisions and start over? This clears your Keep/Pass choices.')) return;
   decisions = {};
   saveDecisions();
   history.length = 0;
   closeReview();
   render();
-});
+}
+$('resetBtn').addEventListener('click', clearProgress);
+$('clearBtn').addEventListener('click', clearProgress);
 
 // ---- go ----
 render();
