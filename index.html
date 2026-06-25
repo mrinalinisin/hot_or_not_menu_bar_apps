@@ -137,13 +137,13 @@
   }
   .act:hover { transform: translateY(-2px); }
   .act .glyph { font-size: 1.7rem; }
+  .act .glyph.svg { width: 1.7rem; height: 1.7rem; }
   .act .lbl { font-size: .62rem; margin-top: .25rem; letter-spacing: .06em; text-transform: uppercase; }
   .act .key { font-size: .58rem; opacity: .55; margin-top: .15rem; }
   .act.big { width: 78px; height: 78px; }
   .act.sm  { width: 60px; height: 60px; }
   .act.pass:hover  { border-color: var(--pass);  color: var(--pass); }
   .act.keep:hover  { border-color: var(--keep);  color: var(--keep); }
-  .act.undo:hover  { border-color: var(--ink); }
   .act:disabled { opacity: .35; cursor: default; transform: none; }
   .hint { text-align: center; font-size: .78rem; color: #8a7f6d; margin: .2rem 0 0; }
 
@@ -244,6 +244,7 @@
     .act.big { width: 66px; height: 66px; }
     .act.sm  { width: 52px; height: 52px; }
     .act .glyph { font-size: 1.5rem; }
+    .act .glyph.svg { width: 1.5rem; height: 1.5rem; }
     .hint { font-size: .7rem; }
     .review-head { padding: .8rem .9rem; gap: .5rem; }
     .row img { width: 64px; height: 48px; }
@@ -278,17 +279,14 @@
 
 <div class="controls" id="controls">
   <div class="actions" id="actions">
-    <button class="act undo sm" id="bUndo" type="button" title="Undo last (U)" aria-label="Undo">
-      <span class="glyph">&#8630;</span>
-    </button>
     <button class="act pass big" id="bPass" type="button" title="Pass (&larr;)" aria-label="Pass">
-      <span class="glyph">&times;</span>
+      <span class="glyph">&larr;</span>
     </button>
     <button class="act keep big" id="bKeep" type="button" title="Keep (&rarr;)" aria-label="Keep">
-      <span class="glyph">&hearts;</span>
+      <span class="glyph">&rarr;</span>
     </button>
   </div>
-  <p class="hint" id="hint">Drag the card or use the buttons &middot; keys: &larr; pass &nbsp; &rarr; keep &nbsp; O open &nbsp; U undo</p>
+  <p class="hint" id="hint">Drag the card or use the buttons &middot; keys: &larr; pass &nbsp; &rarr; keep &nbsp; U undo</p>
 </div>
 
 <footer class="sitefoot">
@@ -379,7 +377,7 @@ const history = [];   // [{ key, prev }]  prev = decision before this action (or
 // ---- element refs ----
 const $ = id => document.getElementById(id);
 const deck = $('deck'), stage = $('stage'), hint = $('hint'), actions = $('actions');
-const bPass = $('bPass'), bKeep = $('bKeep'), bUndo = $('bUndo');
+const bPass = $('bPass'), bKeep = $('bKeep');
 
 function escapeHtml(s){
   return (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -432,7 +430,6 @@ function render(){
   cardEl = buildCard(p);
   deck.appendChild(cardEl);
   attachDrag(cardEl, p);
-  bUndo.disabled = history.length === 0;
 }
 
 // ---- committing a decision with fly-off animation ----
@@ -527,7 +524,6 @@ document.addEventListener('keydown', e => {
 });
 bPass.addEventListener('click', () => decide('pass'));
 bKeep.addEventListener('click', () => decide('keep'));
-bUndo.addEventListener('click', undo);
 
 /* ============================================================
    Review / shortlist overlay
