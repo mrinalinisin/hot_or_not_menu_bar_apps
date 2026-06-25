@@ -27,15 +27,7 @@
     height: 100dvh;          /* dynamic vh: accounts for mobile browser chrome */
     overflow: hidden;        /* the card area scrolls, not the whole page */
   }
-  header, .progresswrap, .sitefoot { flex: 0 0 auto; }   /* fixed-height shell pieces */
-  .sitefoot {
-    text-align: center;
-    padding: .6rem 1rem;
-    font-size: .72rem;
-    color: #8a7f6d;
-    border-top: 1px solid var(--rule);
-  }
-  .sitefoot a { color: var(--accent); }
+  header, .progresswrap { flex: 0 0 auto; }   /* fixed-height shell pieces */
 
   /* ---------- Top bar ---------- */
   header {
@@ -47,7 +39,9 @@
     flex-wrap: wrap;
   }
   header h1 { font-size: 1.35rem; letter-spacing: .03em; margin: 0; white-space: nowrap; }
-  header .tag { font-style: italic; color: var(--accent); font-size: .85rem; }
+  .brand { display: flex; flex-direction: column; gap: .15rem; }
+  .tagline { margin: 0; font-size: .72rem; color: #8a7f6d; }
+  .tagline a { color: var(--accent); }
   .spacer { flex: 1 1 auto; }
   .navbtn {
     font-family: inherit; font-size: .85rem; cursor: pointer;
@@ -223,7 +217,7 @@
   @media (max-width: 560px) {
     header { padding: .6rem .9rem; gap: .5rem .7rem; }
     header h1 { font-size: 1.1rem; }
-    header .tag { font-size: .75rem; }
+    .tagline { font-size: .68rem; }
     .progresswrap { padding: .45rem .9rem 0; }
     .counts { gap: .5rem .9rem; font-size: .74rem; }
     .stage { padding: .8rem; }
@@ -244,8 +238,10 @@
 <body>
 
 <header>
-  <h1>The Menu Bar Catalogue</h1>
-  <span class="tag">Hot or Not</span>
+  <div class="brand">
+    <h1>The Menu Bar Catalogue</h1>
+    <p class="tagline">Data scraped from <a href="https://macmenubar.com/recently-added/" target="_blank" rel="noopener noreferrer">macmenubar.com</a> for educational purposes only &middot; <a href="stats.html">Stats</a></p>
+  </div>
   <span class="spacer"></span>
   <div class="actions" id="actions">
     <button class="act pass" id="bPass" type="button" title="Pass (&larr;)" aria-label="Pass">
@@ -257,7 +253,6 @@
   </div>
   <span class="spacer"></span>
   <button id="clearBtn" class="navbtn danger" type="button" title="Clear your saved progress">Reset</button>
-  <button id="reviewBtn" class="navbtn primary" type="button">Shortlist <span class="pill" id="keepPill">0</span></button>
 </header>
 
 <div class="progresswrap">
@@ -275,10 +270,6 @@
   <div class="deck" id="deck"></div>
 </main>
 
-<footer class="sitefoot">
-  Data scraped from <a href="https://macmenubar.com/recently-added/" target="_blank" rel="noopener noreferrer">https://macmenubar.com</a> for educational purposes only
-  &middot; <a href="stats.html">Stats</a>
-</footer>
 
 <!-- Review / shortlist overlay -->
 <div class="review" id="review">
@@ -493,7 +484,6 @@ function updateStats(){
   $('cDone').textContent  = done;
   $('cKeep').textContent  = keep;
   $('cPass').textContent  = pass;
-  $('keepPill').textContent = keep;
   $('progressFill').style.width = (total ? (done / total * 100) : 0) + '%';
 }
 
@@ -521,7 +511,6 @@ let reviewQuery = '';
 function openReview(bucket){ activeBucket = bucket || activeBucket; review.classList.add('open'); renderReview(); }
 function closeReview(){ review.classList.remove('open'); render(); }
 
-$('reviewBtn').addEventListener('click', () => openReview('keep'));
 $('closeReview').addEventListener('click', closeReview);
 document.querySelectorAll('.tab').forEach(t =>
   t.addEventListener('click', () => { activeBucket = t.dataset.bucket; renderReview(); }));
