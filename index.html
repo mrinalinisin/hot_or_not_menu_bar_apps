@@ -27,7 +27,7 @@
     height: 100dvh;          /* dynamic vh: accounts for mobile browser chrome */
     overflow: hidden;        /* the card area scrolls, not the whole page */
   }
-  header, .progresswrap, .controls, .sitefoot { flex: 0 0 auto; }   /* fixed-height shell pieces */
+  header, .progresswrap, .sitefoot { flex: 0 0 auto; }   /* fixed-height shell pieces */
   .sitefoot {
     text-align: center;
     padding: .6rem 1rem;
@@ -125,33 +125,20 @@
   .card.fly-pass  { transition: transform .35s ease, opacity .35s ease; transform: translateX(-140%) rotate(-18deg); opacity: 0; }
   .card.fly-back  { transition: transform .3s ease, opacity .3s ease; transform: translateY(-40px); opacity: 0; }
 
-  /* ---------- Action buttons (pinned footer) ---------- */
-  .controls {
-    border-top: 1px solid var(--rule);
-    background: var(--paper);
-    padding: .9rem 1rem 1rem;
-  }
-  .actions {
-    display: flex; align-items: center; justify-content: center; gap: 1rem;
-    margin: 0 0 .4rem;
-  }
+  /* ---------- Action buttons (in header) ---------- */
+  .actions { display: flex; align-items: center; gap: .5rem; }
   .act {
     cursor: pointer; font-family: inherit;
     border: 2px solid var(--rule); background: #fff; color: var(--ink);
-    border-radius: 999px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
-    line-height: 1; transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    border-radius: 999px; width: 48px; height: 48px;
+    display: inline-flex; align-items: center; justify-content: center;
+    line-height: 1; transition: transform .12s ease, border-color .12s ease, background .12s ease, color .12s ease;
   }
   .act:hover { transform: translateY(-2px); }
-  .act .glyph { font-size: 1.7rem; }
-  .act .glyph.svg { width: 1.7rem; height: 1.7rem; }
-  .act .lbl { font-size: .62rem; margin-top: .25rem; letter-spacing: .06em; text-transform: uppercase; }
-  .act .key { font-size: .58rem; opacity: .55; margin-top: .15rem; }
-  .act.big { width: 78px; height: 78px; }
-  .act.sm  { width: 60px; height: 60px; }
+  .act .glyph { font-size: 1.4rem; }
   .act.pass:hover  { border-color: var(--pass);  color: var(--pass); }
   .act.keep:hover  { border-color: var(--keep);  color: var(--keep); }
-  .act:disabled { opacity: .35; cursor: default; transform: none; }
-  .hint { text-align: center; font-size: .78rem; color: #8a7f6d; margin: .2rem 0 0; }
+  .hint { font-size: .74rem; color: #8a7f6d; }
 
   /* ---------- Done screen ---------- */
   .done { text-align: center; max-width: 520px; }
@@ -245,13 +232,10 @@
     .counts { gap: .5rem .9rem; font-size: .74rem; }
     .stage { padding: .8rem; }
     .card .art img { max-height: 38vh; }
-    .controls { padding: .7rem .8rem .8rem; }
-    .actions { gap: .8rem; }
-    .act.big { width: 66px; height: 66px; }
-    .act.sm  { width: 52px; height: 52px; }
-    .act .glyph { font-size: 1.5rem; }
-    .act .glyph.svg { width: 1.5rem; height: 1.5rem; }
-    .hint { font-size: .7rem; }
+    .actions { gap: .4rem; }
+    .act { width: 42px; height: 42px; }
+    .act .glyph { font-size: 1.25rem; }
+    .hint { font-size: .68rem; }
     .review-head { padding: .8rem .9rem; gap: .5rem; }
     .row img { width: 64px; height: 48px; }
   }
@@ -267,6 +251,15 @@
   <h1>The Menu Bar Catalogue</h1>
   <span class="tag">Hot or Not</span>
   <span class="spacer"></span>
+  <div class="actions" id="actions">
+    <button class="act pass" id="bPass" type="button" title="Pass (&larr;)" aria-label="Pass">
+      <span class="glyph">&larr;</span>
+    </button>
+    <button class="act keep" id="bKeep" type="button" title="Keep (&rarr;)" aria-label="Keep">
+      <span class="glyph">&rarr;</span>
+    </button>
+  </div>
+  <span class="spacer"></span>
   <button id="reviewBtn" class="navbtn primary" type="button">Shortlist <span class="pill" id="keepPill">0</span></button>
 </header>
 
@@ -276,24 +269,14 @@
     <span><b id="cDone">0</b> of <button type="button" class="ct" data-bucket="todo" title="View items still to review"><b id="cTotal">0</b></button> reviewed</span>
     <button type="button" class="k ct" data-bucket="keep" title="View your Keep list">&hearts; Keep <b id="cKeep">0</b></button>
     <button type="button" class="p ct" data-bucket="pass" title="View your Pass list">&times; Pass <b id="cPass">0</b></button>
+    <span class="spacer"></span>
+    <span class="hint" id="hint">Drag the card or use &larr;&nbsp;pass &middot; &rarr;&nbsp;keep &middot; U&nbsp;undo</span>
   </p>
 </div>
 
 <main class="stage" id="stage">
   <div class="deck" id="deck"></div>
 </main>
-
-<div class="controls" id="controls">
-  <div class="actions" id="actions">
-    <button class="act pass big" id="bPass" type="button" title="Pass (&larr;)" aria-label="Pass">
-      <span class="glyph">&larr;</span>
-    </button>
-    <button class="act keep big" id="bKeep" type="button" title="Keep (&rarr;)" aria-label="Keep">
-      <span class="glyph">&rarr;</span>
-    </button>
-  </div>
-  <p class="hint" id="hint">Drag the card or use the buttons &middot; keys: &larr; pass &nbsp; &rarr; keep &nbsp; U undo</p>
-</div>
 
 <footer class="sitefoot">
   Data scraped from <a href="https://macmenubar.com/recently-added/" target="_blank" rel="noopener noreferrer">https://macmenubar.com</a> for educational purposes only
