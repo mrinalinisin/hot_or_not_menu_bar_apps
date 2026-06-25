@@ -466,7 +466,9 @@ function attachDrag(el, p){
 }
 
 // ---- stats / progress ----
-function count(v){ let n = 0; for (const k in decisions) if (decisions[k] === v) n++; return n; }
+// count only decisions for cards in the current deck — stale localStorage
+// entries (apps since removed from DATA) must not push the tally past total.
+function count(v){ let n = 0; for (const p of order) if (decisions[keyOf(p)] === v) n++; return n; }
 function updateStats(){
   const total = order.length;
   const keep = count('keep'), pass = count('pass');
