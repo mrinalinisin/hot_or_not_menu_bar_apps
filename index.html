@@ -249,7 +249,7 @@
 <div class="progresswrap">
   <div class="progressbar"><i id="progressFill"></i></div>
   <p class="counts">
-    <span><b id="cDone">0</b> of <button type="button" class="ct" data-bucket="todo" title="View items still to review"><b id="cTotal">0</b></button> reviewed</span>
+    <span><b id="cDone">0</b> of <b id="cTotal">0</b> reviewed</span>
     <button type="button" class="k ct" data-bucket="keep" title="View your Keep list">&hearts; Keep <b id="cKeep">0</b></button>
     <button type="button" class="p ct" data-bucket="pass" title="View your Pass list">&times; Pass <b id="cPass">0</b></button>
   </p>
@@ -271,7 +271,6 @@
     <div class="tabs" id="tabs">
       <button class="tab active" data-bucket="keep" type="button">&hearts; Keep <span id="tKeep">0</span></button>
       <button class="tab" data-bucket="pass" type="button">&times; Pass <span id="tPass">0</span></button>
-      <button class="tab" data-bucket="todo" type="button">? To review <span id="tTodo">0</span></button>
     </div>
     <span class="spacer"></span>
     <button class="navbtn" id="closeReview" type="button">Back to swiping</button>
@@ -546,7 +545,6 @@ document.querySelectorAll('.counts .ct').forEach(c =>
 $('reviewSearch').addEventListener('input', e => { reviewQuery = e.target.value; renderReview(); });
 
 function listFor(bucket){
-  if (bucket === 'todo') return order.filter(p => !decisions[keyOf(p)]);   // not yet reviewed
   return order.filter(p => decisions[keyOf(p)] === bucket);
 }
 
@@ -569,8 +567,7 @@ function refreshReviewCounts(){
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.bucket === activeBucket));
   $('tKeep').textContent = count('keep');
   $('tPass').textContent = count('pass');
-  $('tTodo').textContent = listFor('todo').length;
-  $('reviewTitle').textContent = activeBucket === 'todo' ? 'Still to review' : 'Your shortlist';
+  $('reviewTitle').textContent = 'Your shortlist';
 }
 
 function buildReviewRow(p){
@@ -614,8 +611,7 @@ function renderReview(){
   const scroller = document.querySelector('.review-body');
   listEl.innerHTML = '';
   emptyEl.hidden = items.length > 0;
-  emptyEl.textContent = q ? ('No matches for “' + q + '”.')
-    : (activeBucket === 'todo' ? 'You’ve reviewed everything! 🎉' : 'Nothing here yet.');
+  emptyEl.textContent = q ? ('No matches for “' + q + '”.') : 'Nothing here yet.';
   $('searchCount').textContent = q ? (items.length + ' of ' + total + ' match') : '';
   if (reviewScrollHandler) { scroller.removeEventListener('scroll', reviewScrollHandler); reviewScrollHandler = null; }
   scroller.scrollTop = 0;                              // reset scroll for the new bucket
